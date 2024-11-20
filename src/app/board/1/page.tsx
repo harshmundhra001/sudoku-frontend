@@ -13,12 +13,15 @@ export default function CreateGame() {
 			<h1>Grid</h1>
 			<SudokuBoard addNote={note} />
 			<div>
-				<button onClick={handleNoteClick} className='bg-slate-100 text-black p-2 my-2 rounded-lg'>
-					<p>Note</p>
+				<button onClick={handleNoteClick} className='relative text-slate-100 p-2 my-2 rounded-lg inline-flex'>
+					Note
+					<span className={`${note ? 'bg-green-800' : 'bg-red-800'} p-1 rounded-lg text-[8px] mt-2 mr-3`}>
+						{note ? 'On' : 'Off'}
+					</span>
 				</button>
-				<button onClick={handleNoteClick} className='bg-slate-100 text-black p-2 my-2 mx-2 rounded-lg'>
-				<p>Erase</p>
-			</button>
+				<button onClick={handleNoteClick} className='text-slate-100 p-2 my-2 mx-2 rounded-lg'>
+					<p>Erase</p>
+				</button>
 			</div>
 		</div>
 	);
