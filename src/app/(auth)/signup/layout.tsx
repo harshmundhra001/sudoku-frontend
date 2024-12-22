@@ -10,5 +10,5 @@ export default function CreateGameLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return <div className='flex items-center justify-center min-h-screen m-2'>{children}</div>;
+	return <div className='flex items-center justify-center min-h-screen m-2' style={{ height: 'calc(100vh - 10rem)' }}>{children}</div>;
 }
