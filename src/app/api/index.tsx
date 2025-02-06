@@ -24,4 +24,3 @@ const createSudokuGame = async (difficulty: number) => {
 // };
 
 createSudokuGame(2);
-

@@ -6,7 +6,7 @@ import SudokuGrid from './sudoku-grid';
 
 const BOARD_SIZE = 9;
 
-const SudokuBoard2 = (props: { addNote: boolean }) => {
+const SudokuBoard = (props: { addNote: boolean }) => {
 	const { addNote } = props;
 
 	// Render the Sudoku grid
@@ -51,4 +51,4 @@ const SudokuBoard2 = (props: { addNote: boolean }) => {
 	);
 };
 
-export default SudokuBoard2;
+export default SudokuBoard;
