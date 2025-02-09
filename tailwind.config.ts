@@ -11,15 +11,15 @@ export default {
 			colors: {
 				background: 'var(--background)',
 				foreground: 'var(--foreground)',
-				primary: '#0096c7',
+				primary: '#4F46E5',
 				prim: {
-					dark: '#0077b6',
-					light: '#00b4d8',
+					dark: '#3730A3',
+					light: '#818CF8',
 				},
-				secondary: '#ff8500',
+				secondary: '#F59E0B',
 				sec: {
-					dark: '#ff6d00',
-					light: '#ff9e00',
+					dark: '#D97706',
+					light: '#FCD34D',
 				},
 			},
 		},

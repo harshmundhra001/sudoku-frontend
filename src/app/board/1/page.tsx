@@ -19,10 +19,14 @@ export default function CreateGame() {
 						{note ? 'On' : 'Off'}
 					</span>
 				</button>
-				<button onClick={handleNoteClick} className='text-slate-100 p-2 my-2 mx-2 rounded-lg'>
+				<button onClick={() => true} className='text-slate-100 p-2 my-2 mx-2 rounded-lg'>
 					<p>Erase</p>
 				</button>
 			</div>
 		</div>
 	);
 }
+
+// useRef.cell
+// add class name -> reset the required cell
+// Read about react bubbling
