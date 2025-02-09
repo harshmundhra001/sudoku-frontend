@@ -52,7 +52,7 @@ function GeneralEntryComponent(props: {
 				<div className='flex flex-col justify-evenly items-center h-2/3 w-full'>
 					<GenerateInputs count={inputType.length} type={inputType} placeholders={placeholders} />
 
-					<CustomButton buttonText={name} callback={() => true} className='w-3/4 rounded-xl py-3' isPrimary={!isPrimary} />
+					<CustomButton buttonText={name} callback={() => true} className='w-3/4' isPrimary={!isPrimary} />
 				</div>
 			)}
 		</div>

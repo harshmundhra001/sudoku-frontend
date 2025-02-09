@@ -1,62 +1,55 @@
+import { SudokuBlockProps } from '@/types/board';
 import React, { useState } from 'react';
 
-function SudokuGrid(props: { addNote: boolean }) {
-	const { addNote } = props;
-	// Initialize a 3x3 grid with empty values
-	const [grid, setGrid] = useState(
+export default function SudokuGrid(props: SudokuBlockProps) {
+	const { addNote, initialValue, isEditable } = props;
+	// Initialize a 3x3 grid for notes with booleans
+	const [grid, setGrid] = useState<boolean[][]>(
 		Array(3)
-			.fill(null)
-			.map(() => Array(3).fill(null))
+			.fill(false)
+			.map(() => Array(3).fill(false))
 	);
-	const [block, setBlock] = useState<number | null>(null);
+	const [blockValue, setblockValue] = useState<number | null>(initialValue);
 
-	const generateGridData = (key: number) => {
+	const updateNoteGrid = (key: number) => {
 		const row = Math.floor((key - 1) / 3);
 		const col = (key - 1) % 3;
 
-		// Update the grid with the new value
-		const newGrid = [...grid];
-		if (newGrid[row][col] === null) newGrid[row][col] = key.toString();
-		else newGrid[row][col] = null;
-
+		// Create a deep copy of the grid to maintain immutability
+		const newGrid = grid.map((row) => [...row]);
+		newGrid[row][col] = !newGrid[row][col];
 		return newGrid;
 	};
 
-	const getEmptyGridData = () => {
-		return Array(3)
-			.fill(null)
-			.map(() => Array(3).fill(null));
-	};
-	// Function to handle keydown event
 	const handleKeyDown = (e: React.KeyboardEvent) => {
-		const key = parseInt(e.key, 10);
+		if (!isEditable) return;
+		// Handle number input
+		if (/^[1-9]$/.test(e.key)) {
+			const key = parseInt(e.key, 10);
 
-		// Check if the key is a number between 1 and 9
-		if (key >= 1 && key <= 9) {
-			// Determine row and column based on key
-			let newGrid;
+			if (addNote && !blockValue) {
+				// Only allow notes if no main number exists
+				setGrid(updateNoteGrid(key));
+			} else if (!blockValue || blockValue === key) {
+				setblockValue((current) => (current ? null : key));
+				setGrid(grid.map((row) => row.map(() => false))); // Clear notes when setting number
+			}
+		}
 
-			if (block) {
-				return;
-			}
-			if (addNote) {
-				newGrid = generateGridData(key);
-			} else {
-				newGrid = getEmptyGridData();
-				setBlock(key);
-			}
-			setGrid(newGrid);
+		// Handle deletion
+		if (e.key === 'Backspace' || e.key === 'Delete') {
+			setblockValue(null);
+			setGrid(grid.map((row) => row.map(() => false)));
 		}
 	};
 
-	// Separate function to render the grid based on the 2D array
-	const renderGrid = (gridData: (number | null)[][]) => (
-		<div className='absolute inset-0 z-0 grid grid-rows-3'>
-			{gridData.map((row, rowIndex) => (
-				<div key={rowIndex} className='flex'>
-					{row.map((cell, colIndex) => (
-						<div key={colIndex} className='w-1/3 h-full bg-slate-800 flex items-center justify-center text-gray-300'>
-							{cell}
+	const renderNotesGrid = () => (
+		<div className='absolute inset-0 grid grid-rows-3 text-xs'>
+			{grid.map((row, i) => (
+				<div key={i} className='flex'>
+					{row.map((cell, j) => (
+						<div key={j} className='w-1/3 h-full flex items-center justify-center text-gray-300'>
+							{cell && i * 3 + j + 1}
 						</div>
 					))}
 				</div>
@@ -66,19 +59,19 @@ function SudokuGrid(props: { addNote: boolean }) {
 
 	return (
 		<div
-			className='relative w-16 h-16'
+			className='relative w-16 h-16 bg-slate-800 hover:border-2 hover:border-gray-500 focus:border-2 focus:border-blue-500 outline-none'
 			onKeyDown={handleKeyDown}
-			tabIndex={0} // Make the div focusable to capture keydown events
+			tabIndex={0}
+			role='gridcell'
+			aria-label={blockValue ? `Cell value ${blockValue}` : 'Empty cell'}
 		>
-			{/* Render the base grid */}
-			{renderGrid(grid)}
-
-			{/* Bordered layer for styling */}
-			<div className='absolute inset-0 z-10 flex items-center justify-center text-4xl hover:border-2 hover:border-gray-500'>
-				{block}
-			</div>
+			{blockValue ? (
+				<div className='absolute inset-0 flex items-center justify-center text-3xl text-white pointer-events-none'>
+					{blockValue}
+				</div>
+			) : (
+				renderNotesGrid()
+			)}
 		</div>
 	);
 }
-
-export default SudokuGrid;

@@ -1,6 +1,7 @@
 'use client';
 
 import CustomButton from '@/components/custom-button';
+import { constructUrl } from '@/units/general';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, use } from 'react';
 
@@ -10,6 +11,32 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 	const [countdown, setCountdown] = useState<number>(5);
 	const [isCounting, setIsCounting] = useState(false);
 	const [isCopied, setIsCopied] = useState(false);
+	const [users] = useState(['Player 1', 'Player 2', 'player 3', 'player 3', 'player 3', 'player 3', 'player 3']); // Hardcoded users
+
+	const handleStartGame = async () => {
+		try {
+			const response = await fetch(constructUrl('API.GAME.START'), {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					code,
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to create game');
+			}
+
+			setIsCounting(true);
+
+			return;
+		} catch (err) {
+			// setError((err as Error).message || 'Something went wrong');
+			console.error(err);
+		}
+	};
 
 	// Countdown timer effect
 	useEffect(() => {
@@ -19,7 +46,7 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 			}, 1000);
 			return () => clearInterval(timer);
 		} else if (countdown === 0) {
-			router.push(`/game/${code}`);
+			router.push(`/${code}`);
 		}
 	}, [isCounting, countdown, code, router]);
 
@@ -36,41 +63,39 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 	if (!code) return <div>Loading...</div>;
 
 	return (
-		<div className='flex flex-col items-center justify-center min-h-screen p-4'>
-			<div className='bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6'>
-				<h1 className='text-2xl font-bold text-center text-indigo-600'>Game Lobby</h1>
-
-				<div className='text-center space-y-4'>
-					<p className='text-gray-600'>Share this game ID with friends:</p>
-					<code className='bg-slate-100 p-2 rounded-lg font-mono text-indigo-500'>{code}</code>
+		<div className='flex flex-col items-center justify-center min-h-screen w-1/3 p-4'>
+			<div className='rounded-xl p-8 w-full max-w-md space-y-6'>
+				{' '}
+				{/* Removed bg-white and shadow */}
+				<h1 className='text-3xl font-bold text-center text-indigo-600'>Game Lobby</h1>
+				<div className='text-center space-y-8'>
+					<p className='text-gray-300'>Share this game ID with friends:</p>
+					<code className='p-2 rounded-lg font-mono text-indigo-500'>{code}</code>
 				</div>
-
+				{/* Added scrollable user list */}
+				<div className='space-y-2 max-h-48 overflow-y-auto border border-gray-700 rounded-lg'>
+					<p className='text-gray-300 text-center bg-gray-800 p-2'>Players in Lobby:</p>
+					{users.map((user, index) => (
+						<div key={index} className='p-1 rounded-lg text-center'>
+							{user}
+						</div>
+					))}
+				</div>
 				<div className='flex flex-col space-y-4'>
 					<CustomButton
 						buttonText={isCounting ? `Starting in ${countdown}` : 'Start Game'}
-						callback={() => setIsCounting(true)}
-						className={`w-full py-3 font-medium text-white transition-all ${
-							isCounting ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
-						}`}
+						callback={handleStartGame}
+						className={`w-full font-medium ${isCounting ? 'bg-indigo-400 cursor-not-allowed' : ''}`}
+						isPrimary={true}
 						disabled={isCounting}
 					/>
 
 					<CustomButton
-						// buttonText={
-						//     <>
-						//         {isCopied ? (
-						//             '#x2713; Copied!'
-						//         ) : (
-						//             'Copy Invite Link'
-						//         )}
-						//     </>
-						// }
 						buttonText='Copy Invite Link'
 						callback={handleCopyInvite}
-						className='w-full py-3 bg-amber-100 hover:bg-amber-200 text-amber-700 font-medium border border-amber-200'
+						className='w-full bg-amber-100 hover:bg-amber-200 text-amber-800 font-medium border border-amber-200'
 					/>
 				</div>
-
 				<p className='text-center text-sm text-gray-500'>
 					{isCopied ? 'Link copied to clipboard!' : 'Click invite to share the game'}
 				</p>

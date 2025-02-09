@@ -1,7 +1,7 @@
 import { API } from '@/constants';
 import { ApiObject } from '@/types/general';
 
-export const constructUrl = (endpointPath: string): string => {
+export const constructUrl = (endpointPath: string, id: string = ''): string => {
 	// Split the endpoint path into an array of keys
 	const keys = endpointPath.split('.');
 
@@ -28,5 +28,5 @@ export const constructUrl = (endpointPath: string): string => {
 		}
 	}
 
-	return url;
+	return url+id;
 };

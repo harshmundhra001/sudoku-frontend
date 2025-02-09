@@ -90,7 +90,7 @@ export default function CreateGame() {
 				<CustomButton
 					buttonText='Create Game'
 					callback={handleCreateGame}
-					className='w-full rounded-xl py-3 text-white font-medium'
+					className='w-full font-medium'
 				/>
 			</div>
 		</div>

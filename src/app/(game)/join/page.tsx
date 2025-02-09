@@ -42,7 +42,7 @@ export default function CreateGame() {
                 <CustomButton
                     buttonText='Join Game'
                     callback={handleSubmition}
-                    className='mt-6 w-full bg-primary text-white p-3 rounded-lg hover:bg-prim-dark transition duration-300'
+                    className='mt-6 w-full'
                     isPrimary={true}
                 />
 			</div>

@@ -4,6 +4,6 @@ export const API = {
 		_base: '/game',
 		CREATE: '/create',
 		START: '/start',
-		GET_BOARD: '',
+		ID: '',
 	},
 } as const;
