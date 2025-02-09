@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import CustomButton from '@/components/custom-button';
 import { useRouter } from 'next/navigation';
+import { constructUrl } from '@/units/general';
 
 export default function CreateGame() {
 	const router = useRouter();
@@ -11,7 +12,7 @@ export default function CreateGame() {
 
 	const handleCreateGame = async () => {
 		try {
-			const response = await fetch('http://localhost:8080/api/game/create', {
+			const response = await fetch(constructUrl('API.GAME.CREATE'), {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
