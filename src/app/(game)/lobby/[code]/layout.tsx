@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-	title: 'Join Game',
-	description: 'Join existing game.',
+	title: 'Lobby',
+	description: 'Place to wait for other players/friends to join',
 };
 
 export default function CreateGameLayout({
@@ -10,5 +10,5 @@ export default function CreateGameLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return <div className='flex items-center justify-center min-h-screen m-2'>{children}</div>;
+	return <div className='flex items-center justify-center'>{children}</div>;
 }

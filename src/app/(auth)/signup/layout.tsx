@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-	title: 'Create New Game',
-	description: 'Generate new game',
+	title: 'Sign Up',
+	description: 'Log in | Guest | Sign up',
 };
 
 export default function CreateGameLayout({

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-	title: 'Join Game',
-	description: 'Join existing game.',
+	title: 'Sudoku',
+	description: 'Game page',
 };
 
 export default function CreateGameLayout({
