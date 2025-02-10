@@ -7,7 +7,7 @@ import { SudokuBoardProps } from '@/types/board';
 const BOARD_SIZE = 9;
 
 const SudokuBoard = (props: SudokuBoardProps) => {
-	const { addNote, initialBoard } = props;
+	const { addNote, initialBoard, code } = props;
 
 	// Render the Sudoku grid
 	const renderCell = (row: number, col: number) => {
@@ -25,7 +25,14 @@ const SudokuBoard = (props: SudokuBoardProps) => {
 				// `}
 				role='gridcell'
 			>
-				<SudokuGrid addNote={addNote} initialValue={initialBoard[row][col].initialValue} isEditable={initialBoard[row][col].isEditable} />
+				<SudokuGrid
+					addNote={addNote}
+					initialValue={initialBoard[row][col].initialValue}
+					isEditable={initialBoard[row][col].isEditable}
+					x={row}
+					y={col}
+					code={code}
+				/>
 			</td>
 		);
 	};

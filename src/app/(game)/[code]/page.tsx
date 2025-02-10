@@ -4,8 +4,12 @@ import { constructUrl } from '@/units/general';
 import { use, useEffect, useState } from 'react';
 
 const dummyBoard = Array(9)
-    .fill(null)
-    .map(() => Array(9).fill(null).map(() => ({ isEditable: true, initialValue: null })));
+	.fill(null)
+	.map(() =>
+		Array(9)
+			.fill(null)
+			.map(() => ({ isEditable: true, initialValue: null }))
+	);
 
 export default function Game({ params }: { params: Promise<{ code: string }> }) {
 	const { code } = use(params);
@@ -58,7 +62,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	const handleNoteClick = () => setNote(!note);
 
 	if (loading) {
-		return <div>Loading puzzle...</div>;
+		return <div>Loading Game...</div>;
 	}
 
 	if (error) {
@@ -68,11 +72,13 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	return (
 		<div className='flex flex-col items-center'>
 			<h1 className='text-3xl font-bold mb-8'>Sudoku Puzzle</h1>
-			<SudokuBoard addNote={note} initialBoard={board} />
+			<SudokuBoard addNote={note} initialBoard={board} code={code} />
 			<div>
 				<button onClick={handleNoteClick} className='relative text-slate-100 p-2 my-2 rounded-lg inline-flex bg-gray-800'>
-					Note
-					<span className={`${note ? 'bg-green-800' : 'bg-red-800'} p-1 rounded-lg text-[8px] mt-2 mr-3`}>
+					<span className='py-2 px-4'>Note</span>
+					<span
+						className={`${note ? 'bg-green-800' : 'bg-red-800'} p-1 rounded-lg text-[8px] absolute right-2 bottom-2`}
+					>
 						{note ? 'On' : 'Off'}
 					</span>
 				</button>
