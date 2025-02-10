@@ -3,7 +3,17 @@ import SudokuBoard from '@/components/sudoku-board';
 import { constructUrl } from '@/units/general';
 import { use, useEffect, useState } from 'react';
 
-const dummyBoard = Array(9)
+interface ApiResponseCell {
+	coordinate: { x: number; y: number };
+	boxContent: number;
+}
+
+interface Cell {
+	isEditable: boolean;
+	initialValue: number | null;
+}
+
+const dummyBoard: Cell[][] = Array(9)
 	.fill(null)
 	.map(() =>
 		Array(9)
@@ -18,10 +28,10 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	const [loading, setLoading] = useState(true); // Loading state
 	const [error, setError] = useState<string | null>(null); // Error state
 
-	const convertApiDataToBoard = (data: any) => {
+	const convertApiDataToBoard = (data: ApiResponseCell[]) => {
 		const newBoard = dummyBoard;
 
-		data.forEach((cell: any) => {
+		data.forEach((cell) => {
 			const { x, y } = cell.coordinate;
 			newBoard[x][y].initialValue = cell.boxContent;
 			newBoard[x][y].isEditable = false;
@@ -74,10 +84,10 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 			<h1 className='text-3xl font-bold mb-8'>Sudoku Puzzle</h1>
 			<SudokuBoard addNote={note} initialBoard={board} code={code} />
 			<div>
-				<button onClick={handleNoteClick} className='relative text-slate-100 p-2 my-2 rounded-lg inline-flex bg-gray-800'>
+				<button onClick={handleNoteClick} className='relative text-slate-100 p-2 my-2 mt-4 rounded-lg inline-flex bg-gray-800'>
 					<span className='py-2 px-4'>Note</span>
 					<span
-						className={`${note ? 'bg-green-800' : 'bg-red-800'} p-1 rounded-lg text-[8px] absolute right-2 bottom-2`}
+						className={`${note ? 'bg-green-800' : 'bg-red-800'} p-1 rounded-xl text-[8px] absolute -right-2 -top-2`}
 					>
 						{note ? 'On' : 'Off'}
 					</span>

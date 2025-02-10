@@ -1,6 +1,6 @@
 import { SudokuBlockProps } from '@/types/board';
 import { constructUrl } from '@/units/general';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export default function SudokuGrid(props: SudokuBlockProps) {
 	const { addNote, initialValue, isEditable, code, x, y } = props;
