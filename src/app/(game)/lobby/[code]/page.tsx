@@ -63,7 +63,7 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 	if (!code) return <div>Loading...</div>;
 
 	return (
-		<div className='flex flex-col items-center justify-center min-h-screen w-1/3 p-4'>
+		<div className='flex flex-col items-center justify-center min-h-[95vh] w-1/3 p-4'>
 			<div className='rounded-xl p-8 w-full max-w-md space-y-6'>
 				{' '}
 				{/* Removed bg-white and shadow */}

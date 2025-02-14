@@ -7,4 +7,10 @@ export const API = {
 		SUBMIT: '/submit',
 		ID: '',
 	},
+	AUTH: {
+		_base: '/auth',
+		LOGIN: '/log-in',
+		SIGNUP: '/sign-up',
+		GUEST: '/guest',
+	}
 } as const;

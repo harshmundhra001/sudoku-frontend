@@ -3,7 +3,7 @@ import { constructUrl } from '@/units/general';
 import React, { useState } from 'react';
 
 export default function SudokuGrid(props: SudokuBlockProps) {
-	const { addNote, initialValue, isEditable, code, x, y } = props;
+	const { addNote, initialValue, isEditable, code, x, y, numberFocus, onFocus, isBlockFocus } = props;
 	const [loading, setLoading] = useState(false);
 	const [isAnswerInCorrect, setIsAnswerIncorrect] = useState<boolean>(false);
 
@@ -64,6 +64,7 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 				setGrid(updateNoteGrid(key));
 			} else if (!blockValue) {
 				setblockValue(key);
+				onFocus(x, y, key);
 				setGrid(grid.map((row) => row.map(() => false))); // Clear notes grid
 				fetchGameData(key);
 			} else if (blockValue === key) {
@@ -96,16 +97,23 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 
 	return (
 		<div
-			className={`relative w-16 h-16 bg-slate-800 hover:border-2 hover:border-gray-500 focus:border-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 outline-none ${
+			className={`relative w-16 h-16 ${isBlockFocus ? 'bg-slate-900' : 'bg-slate-800'} ${
+				blockValue && numberFocus === blockValue ? 'bg-slate-700' : ''
+			} hover:border-2 hover:border-gray-500 focus:border-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 outline-none ${
 				isAnswerInCorrect ? 'border-2 border-red-500 focus:border-red-500 focus:ring-red-300' : ''
 			}`}
 			onKeyDown={handleKeyDown}
+			onClick={() => onFocus(x, y, blockValue)}
 			tabIndex={0}
 			role='gridcell'
 			aria-label={blockValue ? `Cell value ${blockValue}` : 'Empty cell'}
 		>
 			{blockValue ? (
-				<div className={`absolute inset-0 flex items-center justify-center text-3xl ${loading ? 'text-gray-400': 'text-white'} pointer-events-none`}>
+				<div
+					className={`absolute inset-0 flex items-center justify-center text-3xl ${
+						loading ? 'text-blue-600' : isEditable ? 'text-blue-400' : 'text-white'
+					} ${numberFocus === blockValue ? 'font-bole' : ''} pointer-events-none`}
+				>
 					{blockValue}
 				</div>
 			) : (

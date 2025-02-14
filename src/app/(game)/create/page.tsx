@@ -41,11 +41,11 @@ export default function CreateGame() {
 		<div className='flex flex-col items-center justify-center min-h-screen p-4'>
 			<h1 className='text-3xl font-bold mb-8'>Create Game</h1>
 
-			<div className='w-full max-w-md space-y-6'>
+			<div className='w-full max-w-xl space-y-6'>
 				{/* Difficulty Selection */}
 				<div className='space-y-2'>
 					<h2 className='text-lg font-medium'>Difficulty</h2>
-					<div className='grid grid-cols-4 gap-2'>
+					<div className='grid grid-cols-5 gap-2'>
 						{['EASY', 'MEDIUM', 'HARD', 'EXTREME', 'EXPERT'].map((level) => (
 							<button
 								key={level}

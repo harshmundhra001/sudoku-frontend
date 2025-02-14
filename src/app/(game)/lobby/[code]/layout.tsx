@@ -10,5 +10,9 @@ export default function CreateGameLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return <div className='flex items-center justify-center'>{children}</div>;
+	return <div className='flex flex-col items-center justify-center'>
+		<p>Note: please ignore the following page, work is under progress.</p>
+		{children}
+		<p>Note: Please click on the Start Game button and enjoy the game.</p>
+		</div>;
 }
