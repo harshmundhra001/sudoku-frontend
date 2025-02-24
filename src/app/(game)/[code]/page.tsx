@@ -32,21 +32,21 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 		});
 	};
 
-	const convertApiDataToBoard = (data: ApiResponseCell[]) => {
-		const newBoardData = sudokuBoard(null);
-		const newBoardEditable = sudokuBoard(true);
-
-		data.forEach((cell) => {
-			const { x, y } = cell.coordinate;
-			newBoardData[x][y] = cell.boxContent;
-			newBoardEditable[x][y] = false;
-			updateNumberCount(cell.boxContent);
-		});
-
-		return { newBoardData, newBoardEditable };
-	};
-
 	useEffect(() => {
+		const convertApiDataToBoard = (data: ApiResponseCell[]) => {
+			const newBoardData = sudokuBoard(null);
+			const newBoardEditable = sudokuBoard(true);
+	
+			data.forEach((cell) => {
+				const { x, y } = cell.coordinate;
+				newBoardData[x][y] = cell.boxContent;
+				newBoardEditable[x][y] = false;
+				updateNumberCount(cell.boxContent);
+			});
+	
+			return { newBoardData, newBoardEditable };
+		};
+
 		const fetchGameData = async () => {
 			try {
 				setLoading(true);
@@ -77,8 +77,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 		};
 
 		fetchGameData();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [code]);
 
 	const handleNoteClick = () => setNote(!note);
 
