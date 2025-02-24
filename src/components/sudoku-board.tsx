@@ -1,13 +1,12 @@
-'use client';
-
-import React, { useState } from 'react';
+'use strict';
+import React from 'react';
 import SudokuGrid from './sudoku-grid';
 import { SudokuBoardProps } from '@/types/board';
 
 const BOARD_SIZE = 9;
 
 const SudokuBoard = (props: SudokuBoardProps) => {
-	const { addNote, initialBoard, code, onFocus, focusValue } = props;
+	const { addNote, initialBoard, code, onFocus, focusValue, updateNumberCount, editBoard } = props;
 
 	// Render the Sudoku grid
 	const renderCell = (row: number, col: number) => {
@@ -27,12 +26,12 @@ const SudokuBoard = (props: SudokuBoardProps) => {
 			>
 				<SudokuGrid
 					addNote={addNote}
-					initialValue={initialBoard[row][col].initialValue}
-					isEditable={initialBoard[row][col].isEditable}
+					initialValue={initialBoard[row][col]}
+					isEditable={editBoard[row][col]}
 					x={row}
 					y={col}
 					code={code}
-					numberFocus={focusValue?.val}
+					numberFocus={focusValue?.value}
 					isBlockFocus={
 						focusValue?.x === row ||
 						focusValue?.y === col ||
@@ -44,6 +43,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
 						)
 					}
 					onFocus={onFocus}
+					updateNumberCount={updateNumberCount}
 				/>
 			</td>
 		);

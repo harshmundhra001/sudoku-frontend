@@ -1,9 +1,11 @@
 import { SudokuBlockProps } from '@/types/board';
 import { constructUrl } from '@/units/general';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 export default function SudokuGrid(props: SudokuBlockProps) {
-	const { addNote, initialValue, isEditable, code, x, y, numberFocus, onFocus, isBlockFocus } = props;
+	const router = useRouter();
+	const { addNote, initialValue, isEditable, code, x, y, numberFocus, onFocus, isBlockFocus, updateNumberCount } = props;
 	const [loading, setLoading] = useState(false);
 	const [isAnswerInCorrect, setIsAnswerIncorrect] = useState<boolean>(false);
 
@@ -18,9 +20,10 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 	const fetchGameData = async (key: number) => {
 		try {
 			setLoading(true);
+			const token = localStorage.getItem('token');
 			const response = await fetch(constructUrl('API.GAME.SUBMIT'), {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, },
 				body: JSON.stringify({
 					code,
 					x,
@@ -33,7 +36,16 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 				throw new Error('Failed to fetch game data');
 			}
 
+			if (response.status === 401) {
+				router.push('/signup');
+				return;
+			}
+
 			const { data } = await response.json();
+
+			if (data) {
+				updateNumberCount(key);
+			}
 
 			setIsAnswerIncorrect(!data);
 		} catch (err) {
@@ -68,6 +80,9 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 				setGrid(grid.map((row) => row.map(() => false))); // Clear notes grid
 				fetchGameData(key);
 			} else if (blockValue === key) {
+				if (!isAnswerInCorrect) {
+					updateNumberCount(key, 1);
+				}
 				setblockValue(null);
 				setIsAnswerIncorrect(false);
 			}
@@ -75,6 +90,9 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 
 		// Handle deletion
 		if (e.key === 'Backspace' || e.key === 'Delete') {
+			if (blockValue && !isAnswerInCorrect) {
+				updateNumberCount(blockValue, 1);
+			}
 			setblockValue(null);
 			setGrid(grid.map((row) => row.map(() => false)));
 			setIsAnswerIncorrect(false);
@@ -86,7 +104,7 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 			{grid.map((row, i) => (
 				<div key={i} className='flex'>
 					{row.map((cell, j) => (
-						<div key={j} className='w-1/3 h-full flex items-center justify-center text-gray-300'>
+						<div key={j} className={`w-1/3 h-full flex items-center justify-center text-gray-300 ${cell && (i * 3 + j + 1) === numberFocus ? 'bg-blue-400' : ''} rounded-md`}>
 							{cell && i * 3 + j + 1}
 						</div>
 					))}
@@ -97,13 +115,15 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 
 	return (
 		<div
-			className={`relative w-16 h-16 ${isBlockFocus ? 'bg-slate-900' : 'bg-slate-800'} ${
-				blockValue && numberFocus === blockValue ? 'bg-slate-700' : ''
+			className={`relative w-16 h-16 ${
+				blockValue && numberFocus === blockValue ? 'bg-slate-700' : isBlockFocus ? 'bg-slate-900' : 'bg-slate-800'
 			} hover:border-2 hover:border-gray-500 focus:border-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 outline-none ${
 				isAnswerInCorrect ? 'border-2 border-red-500 focus:border-red-500 focus:ring-red-300' : ''
 			}`}
 			onKeyDown={handleKeyDown}
-			onClick={() => onFocus(x, y, blockValue)}
+			onClick={() => {
+				onFocus(x, y, blockValue);
+			}}
 			tabIndex={0}
 			role='gridcell'
 			aria-label={blockValue ? `Cell value ${blockValue}` : 'Empty cell'}

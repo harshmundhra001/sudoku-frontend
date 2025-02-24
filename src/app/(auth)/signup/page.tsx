@@ -1,6 +1,8 @@
 'use client';
+
 import CustomButton from '@/components/custom-button';
 import { constructUrl } from '@/units/general';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 enum SignupStates {
@@ -156,6 +158,7 @@ function GeneralEntryComponent<T extends NameType | CredentialsType | (NameType 
 }
 
 export default function AuthPage() {
+	const router = useRouter();
 	const [currentState, setCurrentState] = useState<SignupStates | null>(null);
 
 	const loginInputs: InputConfig[] = [
@@ -185,7 +188,8 @@ export default function AuthPage() {
 
 			const { data } = await response.json();
 
-			// localStorage.setItem('token', data.token);
+			localStorage.setItem('token', data.token);
+			router.push('/game');
 		} catch (error) {
 			console.error(error);
 		}
@@ -200,14 +204,15 @@ export default function AuthPage() {
 			});
 
 			if (!response.ok) {
-				const errorResponse = await response.json();
-				
-				const errorMessage = errorResponse.error[0].message || 'An error occurred during signup.';
+				// 	const errorResponse = await response.json();
+				// 	const errorMessage = errorResponse.error[0].message || 'An error occurred during signup.';
 			}
 
 			const { data } = await response.json();
 
 			localStorage.setItem('token', data.token);
+
+			router.push('/game');
 		} catch (error) {
 			console.error(error);
 		}

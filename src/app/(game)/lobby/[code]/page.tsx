@@ -15,10 +15,12 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 
 	const handleStartGame = async () => {
 		try {
+			const token = localStorage.getItem('token');
 			const response = await fetch(constructUrl('API.GAME.START'), {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify({
 					code,

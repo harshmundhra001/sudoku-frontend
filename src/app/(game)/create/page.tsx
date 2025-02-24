@@ -12,10 +12,12 @@ export default function CreateGame() {
 
 	const handleCreateGame = async () => {
 		try {
+			const token = localStorage.getItem('token');
 			const response = await fetch(constructUrl('API.GAME.CREATE'), {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify({
 					difficulty,
@@ -87,11 +89,7 @@ export default function CreateGame() {
 				{error && <div className='text-red-500 text-center'>{error}</div>}
 
 				{/* Create Game Button */}
-				<CustomButton
-					buttonText='Create Game'
-					callback={handleCreateGame}
-					className='w-full font-medium'
-				/>
+				<CustomButton buttonText='Create Game' callback={handleCreateGame} className='w-full font-medium' />
 			</div>
 		</div>
 	);
