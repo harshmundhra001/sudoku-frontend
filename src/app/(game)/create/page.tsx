@@ -26,6 +26,11 @@ export default function CreateGame() {
 			});
 
 			if (!response.ok) {
+				const {code} = await response.json();
+				if (code === 401) {
+					router.push('/signup')
+					return;
+				}
 				throw new Error('Failed to create game');
 			}
 

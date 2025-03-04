@@ -195,6 +195,29 @@ export default function AuthPage() {
 		}
 	};
 
+	const handleGuest = async (inputData: { name: string; }) => {
+		try {
+			const response = await fetch(constructUrl('API.AUTH.GUEST'), {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(inputData),
+			});
+
+			if (!response.ok) {
+				// 	const errorResponse = await response.json();
+				// 	const errorMessage = errorResponse.error[0].message || 'An error occurred during signup.';
+			}
+
+			const { data } = await response.json();
+
+			localStorage.setItem('token', data.token);
+
+			router.push('/game');
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	const handleSignUp = async (inputData: { name: string; email: string; password: string }) => {
 		try {
 			const response = await fetch(constructUrl('API.AUTH.SIGNUP'), {
@@ -238,6 +261,7 @@ export default function AuthPage() {
 				inputs={guestInputs}
 				isPrimary={false}
 				handleClick={setCurrentState}
+				handleSubmit={handleGuest}
 			/>
 			<GeneralEntryComponent
 				name={SignupStates.SIGNUP}
