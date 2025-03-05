@@ -17,7 +17,7 @@ const sudokuBoard = (val: number | null | boolean) => {
 export default function Game({ params }: { params: Promise<{ code: string }> }) {
 	const { code } = use(params);
 	const [note, setNote] = useState(false);
-	const [loading, setLoading] = useState(true); // Loading state
+	const [isLoading, setIsLoading] = useState(true); // Loading state
 	const [error, setError] = useState<string | null>(null); // Error state
 	const [focus, setFocus] = useState<Record<string, number | null>>({});
 	const [numberCount, setNumberCount] = useState<number[]>([]);
@@ -49,7 +49,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 
 		const fetchGameData = async () => {
 			try {
-				setLoading(true);
+				setIsLoading(true);
 				const token = localStorage.getItem('token');
 
 				const response = await fetch(constructUrl('API.GAME.ID', `/${code}`), {
@@ -72,7 +72,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 				setError((err as Error).message || 'Something went wrong');
 				// console.error(err);
 			} finally {
-				setLoading(false);
+				setIsLoading(false);
 			}
 		};
 
@@ -107,7 +107,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 		onFocus(null, null, Number(value));
 	};
 
-	if (loading) {
+	if (isLoading) {
 		return <LoadingSpinner />;
 	}
 

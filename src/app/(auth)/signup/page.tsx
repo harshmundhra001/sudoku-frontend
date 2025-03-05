@@ -189,6 +189,7 @@ export default function AuthPage() {
 			const { data } = await response.json();
 
 			localStorage.setItem('token', data.token);
+			localStorage.setItem('user', data.name);
 			router.push('/game');
 		} catch (error) {
 			console.error(error);
@@ -211,6 +212,7 @@ export default function AuthPage() {
 			const { data } = await response.json();
 
 			localStorage.setItem('token', data.token);
+			localStorage.setItem('user', data.name);
 
 			router.push('/game');
 		} catch (error) {
@@ -234,6 +236,7 @@ export default function AuthPage() {
 			const { data } = await response.json();
 
 			localStorage.setItem('token', data.token);
+			localStorage.setItem('user', data.name);
 
 			router.push('/game');
 		} catch (error) {
