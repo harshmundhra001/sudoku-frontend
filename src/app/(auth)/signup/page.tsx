@@ -46,7 +46,7 @@ function GenerateInputs({
 						{...input}
 						id={input.name}
 						onChange={onChange}
-						className='w-full px-5 py-2 rounded-xl text-black focus:outline-none'
+						className='w-full px-5 py-2 rounded-full focus:outline-none bg-transparent border border-gray-200/50 text-white placeholder-gray-200 focus:border-white/50 focus:ring-1 focus:ring-white/50'
 						autoComplete={input.type === 'password' ? 'new-password' : 'off'}
 					/>
 				</div>
@@ -196,7 +196,7 @@ export default function AuthPage() {
 		}
 	};
 
-	const handleGuest = async (inputData: { name: string; }) => {
+	const handleGuest = async (inputData: { name: string }) => {
 		try {
 			const response = await fetch(constructUrl('API.AUTH.GUEST'), {
 				method: 'POST',
@@ -246,7 +246,7 @@ export default function AuthPage() {
 
 	return (
 		<div
-			className={`flex items-center justify-center text-xl w-1/3 rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
+			className={`flex items-center justify-center text-xl w-1/3 rounded-2xl overflow-hidden transition-all duration-500 ease-in-out shadow-2xl ${
 				currentState !== null ? 'w-2/5 h-[500px]  min-h-96' : 'h-auto'
 			}`}
 		>

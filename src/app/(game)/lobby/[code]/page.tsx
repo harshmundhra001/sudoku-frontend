@@ -13,9 +13,53 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 	const [isCopied, setIsCopied] = useState(false);
 	const [users] = useState(['Player 1', 'Player 2', 'player 3', 'player 3', 'player 3', 'player 3', 'player 3']); // Hardcoded users
 
+	useEffect(() => {
+		const controller = new AbortController();
+		const signal = controller.signal;
+
+		const joinGame = async () => {
+			try {
+				const token = localStorage.getItem('token');
+				if (!token) {
+					throw new Error('No authentication token found');
+				}
+
+				const response = await fetch(constructUrl('API.GAME.JOIN'), {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify({ code }),
+					signal, // Connect to abort controller
+				});
+
+				if (!response.ok) {
+					const errorData = await response.json();
+					console.log(errorData, 'Failed to join game');
+				}
+
+				const responseData = await response.json();
+				console.log('Join game successful:', responseData);
+
+				// Handle successful response here (e.g., update state)
+			} catch (error) {
+				console.log('Error joining game:', error);
+				// Handle error here (e.g., show error message, redirect)
+			}
+		};
+
+		joinGame();
+
+		return () => {
+			controller.abort();
+		};
+	}, [code]);
+
 	const handleStartGame = async () => {
 		try {
 			const token = localStorage.getItem('token');
+
 			const response = await fetch(constructUrl('API.GAME.START'), {
 				method: 'POST',
 				headers: {
@@ -75,7 +119,7 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 					<code className='p-2 rounded-lg font-mono text-indigo-500'>{code}</code>
 				</div>
 				{/* Added scrollable user list */}
-				<div className='space-y-2 max-h-48 overflow-y-auto border border-gray-700 rounded-lg'>
+				<div className='space-y-2 max-h-48 overflow-y-auto border border-gray-700 rounded-lg bg-black shadow-2xl'>
 					<p className='text-gray-300 text-center bg-gray-800 p-2'>Players in Lobby:</p>
 					{users.map((user, index) => (
 						<div key={index} className='p-1 rounded-lg text-center'>

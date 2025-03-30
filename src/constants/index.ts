@@ -5,6 +5,7 @@ export const API = {
 		CREATE: '/create',
 		START: '/start',
 		SUBMIT: '/submit',
+		JOIN: '/join',
 		ID: '',
 	},
 	AUTH: {
@@ -12,5 +13,5 @@ export const API = {
 		LOGIN: '/log-in',
 		SIGNUP: '/sign-up',
 		GUEST: '/guest',
-	}
+	},
 } as const;
