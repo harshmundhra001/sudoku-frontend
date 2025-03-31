@@ -12,11 +12,12 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 	const router = useRouter();
 	const { code } = use(params);
 	const [countdown, setCountdown] = useState<number>(5);
+	const [error, setError] = useState<string | null>(null);
 	const [isCounting, setIsCounting] = useState(false);
 	const [isCopied, setIsCopied] = useState(false);
-	const [socket, setSocket] = useState<Socket | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [players, setPlayers] = useState<{ _id: string; name: string }[]>([]); // Hardcoded users
+	const [socket, setSocket] = useState<Socket | null>(null);
 
 	const token = localStorage.getItem('token');
 
@@ -84,7 +85,8 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 
 				if (!response.ok) {
 					const errorData = await response.json();
-					console.log(errorData, 'Failed to join game');
+					console.log(errorData);
+					setError(errorData.message);
 				}
 
 				const responseData = await response.json();
@@ -151,6 +153,8 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 			console.error('Failed to copy URL:', err);
 		}
 	};
+
+	if (error) return <div className='flex justify-center items-center min-h-screen'>{error}</div>;
 
 	if (isLoading || !socket) return <LoadingSpinner />;
 
