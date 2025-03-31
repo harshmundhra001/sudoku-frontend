@@ -2,8 +2,9 @@
 
 import CustomButton from '@/components/custom-button';
 import { constructUrl } from '@/units/general';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 enum SignupStates {
 	LOGIN = 'Log In',
@@ -124,7 +125,7 @@ function GeneralEntryComponent<T extends NameType | CredentialsType | (NameType 
 			<span
 				className={`${
 					currentState === name ? 'text-5xl font-bold' : 'text-lg font-thin'
-				} transition-all duration-500 ease-in-out`}
+				} transition-all duration-500 ease-in-out cursor-default`}
 			>
 				{name}
 			</span>
@@ -159,6 +160,7 @@ function GeneralEntryComponent<T extends NameType | CredentialsType | (NameType 
 
 export default function AuthPage() {
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const [currentState, setCurrentState] = useState<SignupStates | null>(null);
 
 	const loginInputs: InputConfig[] = [
@@ -177,7 +179,14 @@ export default function AuthPage() {
 	const process = (token: string, name: string) => {
 		localStorage.setItem('token', token);
 		localStorage.setItem('user', name);
-		// router.back
+
+		const redirectPath = searchParams.get('redirect');
+
+		if (redirectPath) {
+			router.push(decodeURIComponent(redirectPath));
+			return;
+		}
+
 		router.push('/game');
 	};
 
@@ -190,14 +199,16 @@ export default function AuthPage() {
 			});
 
 			if (!response.ok) {
-				throw new Error('Failed to log in');
+				const errorResponse = await response.json();
+				toast.error(errorResponse.error[0].message);
+				return;
 			}
 
 			const { data } = await response.json();
 
 			process(data.token, data.name);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	};
 
@@ -210,15 +221,16 @@ export default function AuthPage() {
 			});
 
 			if (!response.ok) {
-				// 	const errorResponse = await response.json();
-				// 	const errorMessage = errorResponse.error[0].message || 'An error occurred during signup.';
+				const errorResponse = await response.json();
+				toast.error(errorResponse.error[0].message);
+				return;
 			}
 
 			const { data } = await response.json();
 
 			process(data.token, data.name);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	};
 
@@ -231,15 +243,16 @@ export default function AuthPage() {
 			});
 
 			if (!response.ok) {
-				// 	const errorResponse = await response.json();
-				// 	const errorMessage = errorResponse.error[0].message || 'An error occurred during signup.';
+				const errorResponse = await response.json();
+				toast.error(errorResponse.error[0].message);
+				return;
 			}
 
 			const { data } = await response.json();
 
 			process(data.token, data.name);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	};
 

@@ -3,7 +3,9 @@
 import LoadingSpinner from '@/components/loading-spinner';
 import SudokuBoard from '@/components/sudoku-board';
 import { constructUrl } from '@/units/general';
+import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 interface ApiResponseCell {
 	coordinate: { x: number; y: number };
@@ -15,6 +17,7 @@ const sudokuBoard = (val: number | null | boolean) => {
 };
 
 export default function Game({ params }: { params: Promise<{ code: string }> }) {
+	const router = useRouter();
 	const { code } = use(params);
 	const [note, setNote] = useState(false);
 	const [isLoading, setIsLoading] = useState(true); // Loading state
@@ -36,14 +39,14 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 		const convertApiDataToBoard = (data: ApiResponseCell[]) => {
 			const newBoardData = sudokuBoard(null);
 			const newBoardEditable = sudokuBoard(true);
-	
+
 			data.forEach((cell) => {
 				const { x, y } = cell.coordinate;
 				newBoardData[x][y] = cell.boxContent;
 				newBoardEditable[x][y] = false;
 				updateNumberCount(cell.boxContent);
 			});
-	
+
 			return { newBoardData, newBoardEditable };
 		};
 
@@ -58,7 +61,15 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 				});
 
 				if (!response.ok) {
-					throw new Error('Failed to fetch game data');
+					const { code, error } = await response.json();
+					if (code === 401) {
+						const currentPath = window.location.pathname;
+						router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+						toast.error('Please Sign Up again.');
+						return;
+					}
+					toast.error(error[0].message);
+					return;
 				}
 
 				setNumberCount(Array.from({ length: 9 }, () => 9));
@@ -77,24 +88,11 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 		};
 
 		fetchGameData();
-	}, [code]);
+	}, [code, router]);
 
 	const handleNoteClick = () => setNote(!note);
 
-	const handleErase = () => {
-		// console.log({ focus });
-		// if (focus.x !== null && focus.y !== null) {
-		// 	// Update board state and number count
-		// 	const newBoard = [...board];
-		// 	const currentValue = newBoard[focus.x][focus.y].initialValue;
-		// 	console.log({ currentValue });
-		// 	if (currentValue !== null) {
-		// 		updateNumberCount(currentValue, 1);
-		// 	}
-		// 	newBoard[focus.x][focus.y].initialValue = null;
-		// 	setBoard(newBoard);
-		// }
-	};
+	const handleErase = () => {};
 
 	const onFocus = (x: number | null, y: number | null, value: number | null) => {
 		setFocus({ x, y, value });

@@ -6,13 +6,13 @@ import { SOCKET } from '@/constants';
 import { constructUrl } from '@/units/general';
 import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { io, Socket } from 'socket.io-client';
 
 export default function GameLobby({ params }: { params: Promise<{ code: string }> }) {
 	const router = useRouter();
 	const { code } = use(params);
 	const [countdown, setCountdown] = useState<number>(5);
-	const [error, setError] = useState<string | null>(null);
 	const [isCounting, setIsCounting] = useState(false);
 	const [isCopied, setIsCopied] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
@@ -20,13 +20,22 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 	const [socket, setSocket] = useState<Socket | null>(null);
 
 	const token = localStorage.getItem('token');
+	// const name = localStorage.getItem('user');
 
 	const handleGameStart = () => {
 		setIsCounting(true);
 	};
 
 	const handlePlayerJoin = (newPlayer: { _id: string; name: string }) => {
-		setPlayers((prev) => (prev.some((p) => p._id === newPlayer._id) ? prev : [...prev, newPlayer]));
+		setPlayers((prev) => {
+			const playerExists = prev.some((p) => p._id === newPlayer._id);
+
+			if (!playerExists) {
+				return [...prev, newPlayer];
+			}
+
+			return prev;
+		});
 	};
 
 	useEffect(() => {
@@ -70,7 +79,8 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 		const joinGame = async () => {
 			try {
 				if (!token || !code) {
-					router.push('/signup');
+					const currentPath = window.location.pathname;
+					router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
 				}
 
 				const response = await fetch(constructUrl('API.GAME.JOIN'), {
@@ -84,9 +94,15 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 				});
 
 				if (!response.ok) {
-					const errorData = await response.json();
-					console.log(errorData);
-					setError(errorData.message);
+					const { code, error } = await response.json();
+					if (code === 401) {
+						const currentPath = window.location.pathname;
+						router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+						toast.error('Please Sign Up again.');
+						return;
+					}
+					toast.error(error[0].message);
+					return;
 				}
 
 				const responseData = await response.json();
@@ -120,7 +136,15 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 			});
 
 			if (!response.ok) {
-				throw new Error('Failed to create game');
+				const { code, error } = await response.json();
+				if (code === 401) {
+					const currentPath = window.location.pathname;
+					router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+					toast.error('Please Sign Up again.');
+					return;
+				}
+				toast.error(error[0].message);
+				return;
 			}
 
 			setIsCounting(true);
@@ -153,8 +177,6 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 			console.error('Failed to copy URL:', err);
 		}
 	};
-
-	if (error) return <div className='flex justify-center items-center min-h-screen'>{error}</div>;
 
 	if (isLoading || !socket) return <LoadingSpinner />;
 
