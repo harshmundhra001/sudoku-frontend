@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomButton from '@/components/custom-button';
 import { useRouter } from 'next/navigation';
 import { constructUrl } from '@/units/general';
@@ -9,10 +9,16 @@ export default function CreateGame() {
 	const [difficulty, setDifficulty] = useState('MEDIUM');
 	const [isPublic, setIsPublic] = useState(true);
 	const [error, setError] = useState('');
+	const token = localStorage.getItem('token');
 
+	useEffect(() => {
+		if (!token) {
+			router.push('/signup');
+		}
+	}, [router, token])
+	
 	const handleCreateGame = async () => {
 		try {
-			const token = localStorage.getItem('token');
 			const response = await fetch(constructUrl('API.GAME.CREATE'), {
 				method: 'POST',
 				headers: {

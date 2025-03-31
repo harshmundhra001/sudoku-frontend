@@ -15,3 +15,5 @@ export const API = {
 		GUEST: '/guest',
 	},
 } as const;
+
+export const SOCKET = 'http://localhost:8080/'

@@ -174,6 +174,13 @@ export default function AuthPage() {
 		{ type: 'password', name: 'confirmPassword', placeholder: 'Confirm Password', required: true },
 	];
 
+	const process = (token: string, name: string) => {
+		localStorage.setItem('token', token);
+		localStorage.setItem('user', name);
+		// router.back
+		router.push('/game');
+	};
+
 	const handleLogin = async (inputData: { email: string; password: string }) => {
 		try {
 			const response = await fetch(constructUrl('API.AUTH.LOGIN'), {
@@ -188,9 +195,7 @@ export default function AuthPage() {
 
 			const { data } = await response.json();
 
-			localStorage.setItem('token', data.token);
-			localStorage.setItem('user', data.name);
-			router.push('/game');
+			process(data.token, data.name);
 		} catch (error) {
 			console.error(error);
 		}
@@ -211,10 +216,7 @@ export default function AuthPage() {
 
 			const { data } = await response.json();
 
-			localStorage.setItem('token', data.token);
-			localStorage.setItem('user', data.name);
-
-			router.push('/game');
+			process(data.token, data.name);
 		} catch (error) {
 			console.error(error);
 		}
@@ -235,10 +237,7 @@ export default function AuthPage() {
 
 			const { data } = await response.json();
 
-			localStorage.setItem('token', data.token);
-			localStorage.setItem('user', data.name);
-
-			router.push('/game');
+			process(data.token, data.name);
 		} catch (error) {
 			console.error(error);
 		}
