@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 interface ApiResponseCell {
 	coordinate: { x: number; y: number };
 	boxContent: number;
+	fill: boolean;
 }
 
 const sudokuBoard = (val: number | null | boolean) => {
@@ -43,7 +44,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 			data.forEach((cell) => {
 				const { x, y } = cell.coordinate;
 				newBoardData[x][y] = cell.boxContent;
-				newBoardEditable[x][y] = false;
+				newBoardEditable[x][y] = !cell.fill;
 				updateNumberCount(cell.boxContent);
 			});
 

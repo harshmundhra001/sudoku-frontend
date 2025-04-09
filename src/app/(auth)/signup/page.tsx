@@ -258,8 +258,8 @@ export default function AuthPage() {
 
 	return (
 		<div
-			className={`flex items-center justify-center text-xl w-1/3 rounded-2xl overflow-hidden transition-all duration-500 ease-in-out shadow-2xl ${
-				currentState !== null ? 'w-2/5 h-[500px]  min-h-96' : 'h-auto'
+			className={`flex items-center justify-center text-xl rounded-2xl overflow-hidden transition-all duration-500 ease-in-out shadow-2xl ${
+				currentState !== null ? 'lg:w-2/5 md:w-3/5 w-4/5 h-[500px]' : 'lg:w-1/3 w-3/5 h-16'
 			}`}
 		>
 			<GeneralEntryComponent
