@@ -2,6 +2,7 @@ import { SudokuBlockProps } from '@/types/board';
 import { constructUrl } from '@/units/general';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function SudokuGrid(props: SudokuBlockProps) {
 	const router = useRouter();
@@ -23,7 +24,7 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 			const token = localStorage.getItem('token');
 			const response = await fetch(constructUrl('API.GAME.SUBMIT'), {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({
 					code,
 					x,
@@ -33,11 +34,14 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 			});
 
 			if (!response.ok) {
-				throw new Error('Failed to fetch game data');
-			}
-
-			if (response.status === 401) {
-				router.push('/signup');
+				const { code, error } = await response.json();
+				if (code === 401) {
+					const currentPath = window.location.pathname;
+					router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+					toast.error('Please Sign Up again.');
+					return;
+				}
+				toast.error(error[0].message);
 				return;
 			}
 
@@ -104,7 +108,12 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 			{grid.map((row, i) => (
 				<div key={i} className='flex'>
 					{row.map((cell, j) => (
-						<div key={j} className={`w-1/3 h-full flex items-center justify-center text-gray-300 ${cell && (i * 3 + j + 1) === numberFocus ? 'bg-blue-400' : ''} rounded-md`}>
+						<div
+							key={j}
+							className={`w-1/3 h-full flex items-center justify-center text-gray-300 ${
+								cell && i * 3 + j + 1 === numberFocus ? 'bg-blue-400' : ''
+							} rounded-md`}
+						>
 							{cell && i * 3 + j + 1}
 						</div>
 					))}

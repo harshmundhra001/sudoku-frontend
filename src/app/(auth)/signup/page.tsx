@@ -2,8 +2,9 @@
 
 import CustomButton from '@/components/custom-button';
 import { constructUrl } from '@/units/general';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 enum SignupStates {
 	LOGIN = 'Log In',
@@ -124,7 +125,7 @@ function GeneralEntryComponent<T extends NameType | CredentialsType | (NameType 
 			<span
 				className={`${
 					currentState === name ? 'text-5xl font-bold' : 'text-lg font-thin'
-				} transition-all duration-500 ease-in-out`}
+				} transition-all duration-500 ease-in-out cursor-default`}
 			>
 				{name}
 			</span>
@@ -159,6 +160,7 @@ function GeneralEntryComponent<T extends NameType | CredentialsType | (NameType 
 
 export default function AuthPage() {
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const [currentState, setCurrentState] = useState<SignupStates | null>(null);
 
 	const loginInputs: InputConfig[] = [
@@ -174,6 +176,20 @@ export default function AuthPage() {
 		{ type: 'password', name: 'confirmPassword', placeholder: 'Confirm Password', required: true },
 	];
 
+	const process = (token: string, name: string) => {
+		localStorage.setItem('token', token);
+		localStorage.setItem('user', name);
+
+		const redirectPath = searchParams.get('redirect');
+
+		if (redirectPath) {
+			router.push(decodeURIComponent(redirectPath));
+			return;
+		}
+
+		router.push('/game');
+	};
+
 	const handleLogin = async (inputData: { email: string; password: string }) => {
 		try {
 			const response = await fetch(constructUrl('API.AUTH.LOGIN'), {
@@ -183,16 +199,16 @@ export default function AuthPage() {
 			});
 
 			if (!response.ok) {
-				throw new Error('Failed to log in');
+				const errorResponse = await response.json();
+				toast.error(errorResponse.error[0].message);
+				return;
 			}
 
 			const { data } = await response.json();
 
-			localStorage.setItem('token', data.token);
-			localStorage.setItem('user', data.name);
-			router.push('/game');
+			process(data.token, data.name);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	};
 
@@ -205,18 +221,16 @@ export default function AuthPage() {
 			});
 
 			if (!response.ok) {
-				// 	const errorResponse = await response.json();
-				// 	const errorMessage = errorResponse.error[0].message || 'An error occurred during signup.';
+				const errorResponse = await response.json();
+				toast.error(errorResponse.error[0].message);
+				return;
 			}
 
 			const { data } = await response.json();
 
-			localStorage.setItem('token', data.token);
-			localStorage.setItem('user', data.name);
-
-			router.push('/game');
+			process(data.token, data.name);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	};
 
@@ -229,25 +243,23 @@ export default function AuthPage() {
 			});
 
 			if (!response.ok) {
-				// 	const errorResponse = await response.json();
-				// 	const errorMessage = errorResponse.error[0].message || 'An error occurred during signup.';
+				const errorResponse = await response.json();
+				toast.error(errorResponse.error[0].message);
+				return;
 			}
 
 			const { data } = await response.json();
 
-			localStorage.setItem('token', data.token);
-			localStorage.setItem('user', data.name);
-
-			router.push('/game');
+			process(data.token, data.name);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	};
 
 	return (
 		<div
-			className={`flex items-center justify-center text-xl w-1/3 rounded-2xl overflow-hidden transition-all duration-500 ease-in-out shadow-2xl ${
-				currentState !== null ? 'w-2/5 h-[500px]  min-h-96' : 'h-auto'
+			className={`flex items-center justify-center text-xl rounded-2xl overflow-hidden transition-all duration-500 ease-in-out shadow-2xl ${
+				currentState !== null ? 'lg:w-2/5 md:w-3/5 w-4/5 h-[500px]' : 'lg:w-1/3 w-3/5 h-16'
 			}`}
 		>
 			<GeneralEntryComponent

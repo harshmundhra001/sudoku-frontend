@@ -1,18 +1,26 @@
 'use client';
-import { useState } from 'react';
 import CustomButton from '@/components/custom-button';
-import { useRouter } from 'next/navigation';
 import { constructUrl } from '@/units/general';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function CreateGame() {
 	const router = useRouter();
 	const [difficulty, setDifficulty] = useState('MEDIUM');
 	const [isPublic, setIsPublic] = useState(true);
 	const [error, setError] = useState('');
+	const token = localStorage.getItem('token');
+
+	useEffect(() => {
+		if (!token) {
+			const currentPath = window.location.pathname;
+			router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+		}
+	}, [router, token]);
 
 	const handleCreateGame = async () => {
 		try {
-			const token = localStorage.getItem('token');
 			const response = await fetch(constructUrl('API.GAME.CREATE'), {
 				method: 'POST',
 				headers: {
@@ -26,12 +34,15 @@ export default function CreateGame() {
 			});
 
 			if (!response.ok) {
-				const {code} = await response.json();
+				const { code, error } = await response.json();
 				if (code === 401) {
-					router.push('/signup')
+					const currentPath = window.location.pathname;
+					router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+					toast.error('Please Sign Up again.');
 					return;
 				}
-				throw new Error('Failed to create game');
+				toast.error(error[0].message);
+				return;
 			}
 
 			const { data } = await response.json();
