@@ -140,7 +140,13 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 			{blockValue ? (
 				<div
 					className={`absolute inset-0 flex items-center justify-center text-3xl ${
-						loading ? 'text-blue-600' : isEditable ? 'text-blue-400' : 'text-white'
+						loading
+							? 'text-blue-600'
+							: isAnswerInCorrect
+							? 'text-red-400'
+							: isEditable
+							? 'text-blue-400'
+							: 'text-white'
 					} ${numberFocus === blockValue ? 'font-bole' : ''} pointer-events-none`}
 				>
 					{blockValue}

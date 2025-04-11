@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
 	title: 'Join Game',
@@ -10,5 +11,10 @@ export default function CreateGameLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return <div className='flex items-center justify-center min-h-screen m-2'>{children}</div>;
+	return (
+		<div className='flex items-center justify-center min-h-screen m-2'>
+			<Toaster position='top-right' reverseOrder={true} />
+			{children}
+		</div>
+	);
 }

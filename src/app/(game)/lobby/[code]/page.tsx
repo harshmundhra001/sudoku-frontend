@@ -12,15 +12,14 @@ import { io, Socket } from 'socket.io-client';
 export default function GameLobby({ params }: { params: Promise<{ code: string }> }) {
 	const router = useRouter();
 	const { code } = use(params);
+	const token = localStorage.getItem('token');
+
 	const [countdown, setCountdown] = useState<number>(5);
-	const [isCounting, setIsCounting] = useState(false);
 	const [isCopied, setIsCopied] = useState(false);
+	const [isCounting, setIsCounting] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [players, setPlayers] = useState<{ _id: string; name: string }[]>([]); // Hardcoded users
 	const [socket, setSocket] = useState<Socket | null>(null);
-
-	const token = localStorage.getItem('token');
-	// const name = localStorage.getItem('user');
 
 	const handleGameStart = () => {
 		setIsCounting(true);
@@ -102,6 +101,11 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 						return;
 					}
 					toast.error(error[0].message);
+
+					if (code === 402) {
+						router.replace('/join');
+						return;
+					}
 					return;
 				}
 
@@ -123,6 +127,7 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 	}, [code, router, token]);
 
 	const handleStartGame = async () => {
+		if (isCounting) return;
 		try {
 			const response = await fetch(constructUrl('API.GAME.START'), {
 				method: 'POST',

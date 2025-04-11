@@ -5,8 +5,9 @@ export const API = {
 		CREATE: '/create',
 		START: '/start',
 		SUBMIT: '/submit',
-		JOIN: '/join',
 		ID: '',
+		ISVALID: '/is-valid',
+		JOIN: '/join',
 	},
 	AUTH: {
 		_base: '/auth',
