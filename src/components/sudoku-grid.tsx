@@ -22,7 +22,7 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 		try {
 			setLoading(true);
 			const token = localStorage.getItem('token');
-			const response = await fetch(constructUrl('API.GAME.SUBMIT'), {
+			const response = await fetch(constructUrl('API.GAME.FILL'), {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({

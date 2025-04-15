@@ -4,7 +4,7 @@ export const API = {
 		_base: '/game',
 		CREATE: '/create',
 		START: '/start',
-		SUBMIT: '/submit',
+		FILL: '/fill',
 		ID: '',
 		ISVALID: '/is-valid',
 		JOIN: '/join',
@@ -17,4 +17,4 @@ export const API = {
 	},
 } as const;
 
-export const SOCKET = 'http://localhost:8080/'
+export const SOCKET = 'http://localhost:8080/';

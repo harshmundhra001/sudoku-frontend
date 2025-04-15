@@ -1,6 +1,7 @@
 'use client';
 
 import LoadingSpinner from '@/components/loading-spinner';
+import ScoreBoard from '@/components/score-board';
 import SudokuBoard from '@/components/sudoku-board';
 import { constructUrl } from '@/units/general';
 import { useRouter } from 'next/navigation';
@@ -27,6 +28,18 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	const [numberCount, setNumberCount] = useState<number[]>([]);
 	const [boardData, setBoardData] = useState(sudokuBoard(null));
 	const [boardEditable, setBoardEditable] = useState(sudokuBoard(true));
+	const players = [
+		{
+			id: 'abc',
+			name: 'Harsh',
+			score: 20
+		},
+		{
+			id: 'abce',
+			name: 'Harsh 2',
+			score: 23
+		}
+	]
 
 	const updateNumberCount = (value: number, count: number = -1) => {
 		setNumberCount((prev) => {
@@ -115,45 +128,51 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	}
 
 	return (
-		<div className='flex flex-col items-center'>
-			<h1 className='text-3xl font-bold mb-8'>Sudoku Puzzle</h1>
-			<SudokuBoard
-				addNote={note}
-				initialBoard={boardData}
-				editBoard={boardEditable}
-				code={code}
-				onFocus={onFocus}
-				focusValue={focus}
-				updateNumberCount={updateNumberCount}
-			/>
-			<div className='flex justify-evenly w-1/3 m-4 '>
-				<button onClick={handleNoteClick} className='relative text-slate-100 w-1/3 py-4 rounded-lg bg-gray-800'>
-					<span className=''>Note</span>
-					<span
-						className={`${note ? 'bg-green-800' : 'bg-red-800'} p-1 rounded-xl text-[8px] absolute -right-2 -top-2`}
-					>
-						{note ? 'On' : 'Off'}
-					</span>
-				</button>
-				<button onClick={handleErase} className='text-slate-100 w-1/3 py-4 rounded-lg bg-gray-800'>
-					<span className=''>Erase</span>
-				</button>
-			</div>
-			<div className='flex m-4 justify-around w-full'>
-				{[...Array(9)].map((_, index) => {
-					const value = index + 1; // Button value (1-9)
-					return (
-						<button
-							key={value}
-							value={value}
-							className={`bg-slate-800 px-4 pt-4 pb-1 rounded-lg ${numberCount[index] === 0 && 'opacity-0'}`}
-							onClick={handleButtonClick}
+		<div className='flex flex-col items-center w-full'>
+			<h1 className='text-3xl font-bold m-4'>Sudoku Puzzle</h1>
+			{/* <ScoreBoard players={players}/> */}
+			<div className='flex flex-col items-center m-4'>
+				<SudokuBoard
+					addNote={note}
+					initialBoard={boardData}
+					editBoard={boardEditable}
+					code={code}
+					onFocus={onFocus}
+					focusValue={focus}
+					updateNumberCount={updateNumberCount}
+				/>
+
+				<div className='flex justify-evenly w-1/3 m-4 '>
+					<button onClick={handleNoteClick} className='relative text-slate-100 w-1/3 py-4 rounded-lg bg-gray-800'>
+						<span className=''>Note</span>
+						<span
+							className={`${
+								note ? 'bg-green-800' : 'bg-red-800'
+							} p-1 rounded-xl text-[8px] absolute -right-2 -top-2`}
 						>
-							<div className='font-bold text-2xl'>{value}</div>
-							<div className='text-xs'>{numberCount[index]}</div>
-						</button>
-					);
-				})}
+							{note ? 'On' : 'Off'}
+						</span>
+					</button>
+					<button onClick={handleErase} className='text-slate-100 w-1/3 py-4 rounded-lg bg-gray-800'>
+						<span className=''>Erase</span>
+					</button>
+				</div>
+				<div className='flex m-4 justify-around w-full'>
+					{[...Array(9)].map((_, index) => {
+						const value = index + 1; // Button value (1-9)
+						return (
+							<button
+								key={value}
+								value={value}
+								className={`bg-slate-800 px-4 pt-4 pb-1 rounded-lg ${numberCount[index] === 0 && 'opacity-0'}`}
+								onClick={handleButtonClick}
+							>
+								<div className='font-bold text-2xl'>{value}</div>
+								<div className='text-xs'>{numberCount[index]}</div>
+							</button>
+						);
+					})}
+				</div>
 			</div>
 		</div>
 	);

@@ -20,3 +20,15 @@ export type SudokuBlockProps = {
 	onFocus: (x: number, y: number, val: number | null) => void;
 	updateNumberCount: (value: number, count?: number) => void;
 };
+
+export type PlayerScore = {
+	id: string;
+	name: string;
+	score: number;
+};
+
+export type ScoreBoardProps = {
+	players: PlayerScore[]
+}
+
+
