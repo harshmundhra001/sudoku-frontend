@@ -22,24 +22,13 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	const router = useRouter();
 	const { code } = use(params);
 	const [note, setNote] = useState(false);
-	const [isLoading, setIsLoading] = useState(true); // Loading state
+	const [isLoading, setIsLoading] = useState({ board: true, player: true });
 	const [error, setError] = useState<string | null>(null); // Error state
 	const [focus, setFocus] = useState<Record<string, number | null>>({});
 	const [numberCount, setNumberCount] = useState<number[]>([]);
 	const [boardData, setBoardData] = useState(sudokuBoard(null));
 	const [boardEditable, setBoardEditable] = useState(sudokuBoard(true));
-	const players = [
-		{
-			id: 'abc',
-			name: 'Harsh',
-			score: 20
-		},
-		{
-			id: 'abce',
-			name: 'Harsh 2',
-			score: 23
-		}
-	]
+	const [players, setPlayers] = useState([]);
 
 	const updateNumberCount = (value: number, count: number = -1) => {
 		setNumberCount((prev) => {
@@ -66,7 +55,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 
 		const fetchGameData = async () => {
 			try {
-				setIsLoading(true);
+				setIsLoading({ player: true, board: true });
 				const token = localStorage.getItem('token');
 
 				const response = await fetch(constructUrl('API.GAME.ID', `/${code}`), {
@@ -97,7 +86,43 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 				setError((err as Error).message || 'Something went wrong');
 				// console.error(err);
 			} finally {
-				setIsLoading(false);
+				setIsLoading((prop) => ({ ...prop, board: false }));
+			}
+		};
+
+		fetchGameData();
+	}, [code, router]);
+
+	useEffect(() => {
+		const fetchGameData = async () => {
+			try {
+				const token = localStorage.getItem('token');
+
+				const response = await fetch(constructUrl('API.GAME.ID.PLAYER', `/${code}`), {
+					method: 'GET',
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				});
+
+				if (!response.ok) {
+					const { code, error } = await response.json();
+					if (code === 401) {
+						const currentPath = window.location.pathname;
+						router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+						toast.error('Please Sign Up again.');
+						return;
+					}
+					toast.error(error[0].message);
+					return;
+				}
+
+				setNumberCount(Array.from({ length: 9 }, () => 9));
+				const { data } = await response.json();
+
+				setPlayers(data);
+			} catch (err) {
+				setError((err as Error).message || 'Something went wrong');
+			} finally {
+				setIsLoading((prop) => ({ ...prop, player: false }));
 			}
 		};
 
@@ -119,7 +144,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 		onFocus(null, null, Number(value));
 	};
 
-	if (isLoading) {
+	if (isLoading.board || isLoading.player) {
 		return <LoadingSpinner />;
 	}
 
@@ -130,7 +155,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	return (
 		<div className='flex flex-col items-center w-full'>
 			<h1 className='text-3xl font-bold m-4'>Sudoku Puzzle</h1>
-			{/* <ScoreBoard players={players}/> */}
+			<ScoreBoard players={players} />
 			<div className='flex flex-col items-center m-4'>
 				<SudokuBoard
 					addNote={note}
