@@ -22,9 +22,10 @@ export type SudokuBlockProps = {
 };
 
 export type PlayerScore = {
-	id: string;
+	_id: string;
 	name: string;
 	score: number;
+	color: string;
 };
 
 export type ScoreBoardProps = {

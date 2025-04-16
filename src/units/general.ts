@@ -10,7 +10,7 @@ export const constructUrl = (endpointPath: string, id: string = ''): string => {
 
 	// Traverse the API object using the keys
 	let current: ApiObject | string = API;
-	
+
 	for (const key of keys) {
 		if (key === 'API') {
 			url += current._base;
@@ -20,13 +20,16 @@ export const constructUrl = (endpointPath: string, id: string = ''): string => {
 			throw new Error(`Invalid endpoint path: ${endpointPath}`);
 		}
 
-		if (typeof current[key] === 'string') {
+		if (key === 'ID') {
+			url += id;
+		} else if (typeof current[key] === 'string') {
 			url += current[key];
-		} else if (typeof current[key] === 'object') {
+		}
+		if (typeof current[key] === 'object') {
 			current = current[key];
 			url += current._base;
 		}
 	}
 
-	return url+id;
+	return url;
 };

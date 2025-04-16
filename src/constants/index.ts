@@ -5,9 +5,12 @@ export const API = {
 		CREATE: '/create',
 		START: '/start',
 		FILL: '/fill',
-		ID: '',
 		ISVALID: '/is-valid',
 		JOIN: '/join',
+		ID: {
+			_base: '',
+			PLAYER: '/player',
+		},
 	},
 	AUTH: {
 		_base: '/auth',
