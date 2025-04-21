@@ -44,7 +44,6 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 			socket = io(SOCKET, {
 				withCredentials: true,
 				auth: {
-					gameCode: code,
 					token: token,
 				},
 				reconnectionAttempts: 3,

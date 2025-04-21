@@ -3,10 +3,13 @@
 import LoadingSpinner from '@/components/loading-spinner';
 import ScoreBoard from '@/components/score-board';
 import SudokuBoard from '@/components/sudoku-board';
+import { SOCKET } from '@/constants';
+import { PlayerScore } from '@/types/board';
 import { constructUrl } from '@/units/general';
 import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { io, Socket } from 'socket.io-client';
 
 interface ApiResponseCell {
 	coordinate: { x: number; y: number };
@@ -28,7 +31,8 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	const [numberCount, setNumberCount] = useState<number[]>([]);
 	const [boardData, setBoardData] = useState(sudokuBoard(null));
 	const [boardEditable, setBoardEditable] = useState(sudokuBoard(true));
-	const [players, setPlayers] = useState([]);
+	const [players, setPlayers] = useState<PlayerScore[]>([]);
+	const [socket, setSocket] = useState<Socket | null>(null);
 
 	const updateNumberCount = (value: number, count: number = -1) => {
 		setNumberCount((prev) => {
@@ -37,6 +41,44 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 			return newCount;
 		});
 	};
+
+	const handleFill = (update: { _id: string; score: number }) => {
+		setPlayers((prev) => prev.map((val) => (val._id === update._id ? { ...val, score: val.score + update.score } : val)));
+	};
+
+	useEffect(() => {
+		let socket: Socket;
+
+		const token = localStorage.getItem('token');
+
+		const initializeSocket = async () => {
+			socket = io(SOCKET, {
+				withCredentials: true,
+				auth: {
+					token: token,
+				},
+				reconnectionAttempts: 3,
+				reconnectionDelay: 3000,
+				transports: ['websocket'],
+			});
+
+			socket
+				.on('connect', () => {
+					console.log('Connected:', socket.id);
+					socket.emit('joinGame', code);
+				})
+				.on('fill', handleFill);
+
+			setSocket(socket);
+		};
+
+		initializeSocket();
+
+		return () => {
+			socket.emit('leaveLobby', code);
+			socket?.disconnect();
+		};
+	}, [code]);
 
 	useEffect(() => {
 		const convertApiDataToBoard = (data: ApiResponseCell[]) => {

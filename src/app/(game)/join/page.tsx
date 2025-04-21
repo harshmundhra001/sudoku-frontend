@@ -45,6 +45,8 @@ export default function CreateGame() {
 				return;
 			}
 
+			router.push(`lobby/${code}`);
+
 			return;
 		} catch (err) {
 			setError((err as Error).message || 'Something went wrong');
