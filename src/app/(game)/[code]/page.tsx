@@ -156,8 +156,6 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 					toast.error(error[0].message);
 					return;
 				}
-
-				setNumberCount(Array.from({ length: 9 }, () => 9));
 				const { data } = await response.json();
 
 				setPlayers(data);
@@ -170,8 +168,6 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 
 		fetchGameData();
 	}, [code, router]);
-
-	const handleNoteClick = () => setNote(!note);
 
 	const handleErase = () => {};
 
@@ -188,6 +184,10 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 
 	if (isLoading.board || isLoading.player) {
 		return <LoadingSpinner />;
+	}
+
+	if (!isLoading.board && !isLoading.player && !socket) {
+		return <div>Error: Unable to connect to Game.</div>;
 	}
 
 	if (error) {
@@ -209,8 +209,8 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 					updateNumberCount={updateNumberCount}
 				/>
 
-				<div className='flex justify-evenly w-1/3 m-4 '>
-					<button onClick={handleNoteClick} className='relative text-slate-100 w-1/3 py-4 rounded-lg bg-gray-800'>
+				<div className='flex justify-evenly w-1/3 mt-8 mb-4 '>
+					<button onClick={() => setNote(!note)} className='relative text-slate-100 w-1/3 py-4 rounded-lg bg-gray-800'>
 						<span className=''>Note</span>
 						<span
 							className={`${

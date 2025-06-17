@@ -70,7 +70,7 @@ export default function CreateGame() {
 
 	return (
 		<div className='min-h-screen flex items-center justify-center w-full'>
-			<div className='p-8 rounded-lg shadow-lg flex flex-col items-center w-full max-w-sm'>
+			<div className='p-8 rounded-lg shadow-lg shadow-gray-950 flex flex-col items-center w-full max-w-sm'>
 				<h1 className='text-3xl font-bold mb-10'>Join Game</h1>
 				<input
 					onChange={handleTextChange}

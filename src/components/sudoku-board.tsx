@@ -52,7 +52,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
 	// Render the board grid (9x9)
 	const renderBoard = () => {
 		return (
-			<table role='grid' aria-label='Sudoku Board'>
+			<table role='grid' aria-label='Sudoku Board' className='shadow-lg shadow-gray-950'>
 				<tbody>
 					{Array.from({ length: BOARD_SIZE }, (_, row) => (
 						<tr

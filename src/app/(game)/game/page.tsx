@@ -14,7 +14,7 @@ export default function CreateGame() {
 	return (
         <div className='flex flex-col items-center w-full sm:w-3/4 md:w-2/3 lg:w-1/3 md:min-w-[450px] min-w-[350px]'>
             <h1 className='m-12 px-20 text-4xl font-bold text-gray-200'>Game</h1>
-            <div className='flex flex-col sm:flex-row sm:items-center justify-evenly w-full gap-4'>
+            <div className='flex flex-col sm:flex-row sm:items-center justify-evenly items-center w-full gap-4'>
                 <CustomButton
                     callback={() => router.push(`/create`)}
                     buttonText='Create Game'

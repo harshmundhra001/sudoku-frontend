@@ -56,7 +56,7 @@ export default function CreateGame() {
 	};
 
 	return (
-		<div className='flex flex-col items-center justify-center min-h-screen p-4'>
+		<div className='flex flex-col items-center justify-center shadow-lg shadow-gray-950 p-12'>
 			<h1 className='text-3xl font-bold mb-8'>Create Game</h1>
 
 			<div className='w-full max-w-xl space-y-6'>
@@ -68,8 +68,8 @@ export default function CreateGame() {
 							<button
 								key={level}
 								onClick={() => setDifficulty(level)}
-								className={`p-3 rounded-lg transition-colors ${
-									difficulty === level ? 'bg-primary text-white' : 'bg-secondary hover:bg-sec-dark'
+								className={`p-3 rounded-lg transition-colors duration-400 border-2 ${
+									difficulty === level ? 'bg-primary text-white' : 'border-separate text-prim-light  border-primary hover:text-white hover:bg-primary'
 								}`}
 							>
 								{level}

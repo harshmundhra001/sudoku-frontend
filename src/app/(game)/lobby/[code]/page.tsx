@@ -186,7 +186,7 @@ export default function GameLobby({ params }: { params: Promise<{ code: string }
 
 	return (
 		<div className='flex flex-col items-center justify-center min-h-[95vh] w-full md:w-1/2 lg:w-1/3 p-4'>
-			<div className='rounded-xl p-8 w-full max-w-md space-y-6'>
+			<div className='rounded-xl p-8 w-full shadow-lg shadow-gray-950 max-w-md space-y-6'>
 				{' '}
 				{/* Removed bg-white and shadow */}
 				<h1 className='text-3xl font-bold text-center text-indigo-600'>Game Lobby</h1>
