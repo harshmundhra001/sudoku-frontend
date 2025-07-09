@@ -2,8 +2,19 @@ import { SudokuBlockProps } from '@/types/sudoku';
 import React, { useState } from 'react';
 
 export default function SudokuGrid(props: SudokuBlockProps) {
-	const { addNote, initialValue, isEditable, numberFocus, isBlockFocus } = props;
-	const [isAnswerInCorrect, setIsAnswerIncorrect] = useState<boolean>(false);
+	const {
+		addNote,
+		initialValue,
+		isEditable,
+		numberFocus,
+		isBlockFocus,
+		isIncorrect = false,
+		x,
+		y,
+		onFocus,
+		onValueChange,
+		onValueDelete,
+	} = props;
 
 	// Initialize a 3x3 grid for notes with booleans
 	const [grid, setGrid] = useState<boolean[][]>(
@@ -24,7 +35,8 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
-		if (!isEditable) return;
+		// Do nothing if it's not editable or if the answer is correct
+		if (!isEditable || (blockValue && !isIncorrect)) return;
 
 		// Handle number input
 		if (/^[1-9]$/.test(e.key)) {
@@ -34,19 +46,20 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 				setGrid(updateNoteGrid(key));
 			} else if (!blockValue) {
 				setblockValue(key);
-				// onFocus(x, y, key);
+				onFocus(x, y, key);
 				setGrid(grid.map((row) => row.map(() => false))); // Clear notes grid
+				onValueChange(x, y, key);
 			} else if (blockValue === key) {
+				onValueDelete(x, y);
 				setblockValue(null);
-				setIsAnswerIncorrect(false);
 			}
 		}
 
 		// Handle deletion
 		if (e.key === 'Backspace' || e.key === 'Delete') {
+			if (blockValue) onValueDelete(x, y);
 			setblockValue(null);
 			setGrid(grid.map((row) => row.map(() => false)));
-			setIsAnswerIncorrect(false);
 		}
 	};
 
@@ -74,11 +87,11 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 			className={`relative w-16 h-16 ${
 				blockValue && numberFocus === blockValue ? 'bg-slate-700' : isBlockFocus ? 'bg-slate-900' : 'bg-slate-800'
 			} hover:border-2 hover:border-gray-500 focus:border-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 outline-none ${
-				isAnswerInCorrect ? 'border-2 border-red-500 focus:border-red-500 focus:ring-red-300' : ''
+				isIncorrect ? 'border-2 border-red-500 focus:border-red-500 focus:ring-red-300' : ''
 			}`}
 			onKeyDown={handleKeyDown}
 			onClick={() => {
-				// onFocus(x, y, blockValue);
+				onFocus(x, y, blockValue);
 			}}
 			tabIndex={0}
 			role='gridcell'
@@ -87,7 +100,7 @@ export default function SudokuGrid(props: SudokuBlockProps) {
 			{blockValue ? (
 				<div
 					className={`absolute inset-0 flex items-center justify-center text-3xl ${
-						isAnswerInCorrect ? 'text-red-400' : isEditable ? 'text-blue-400' : 'text-white'
+						isIncorrect ? 'text-red-400' : isEditable ? 'text-blue-400' : 'text-white'
 					} ${numberFocus === blockValue ? 'font-bole' : ''} pointer-events-none`}
 				>
 					{blockValue}

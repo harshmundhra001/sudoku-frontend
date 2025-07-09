@@ -5,7 +5,7 @@ import SudokuGrid from './grid';
 const BOARD_SIZE = 9;
 
 const SudokuBoard = (props: SudokuBoardProps2) => {
-	const { addNote, initialBoard, focusValue, editBoard } = props;
+	const { addNote, initialBoard, focusValue, editBoard, onFocus, onValueChange, onValueDelete, incorrectCells } = props;
 
 	// Render the Sudoku grid
 	const renderCell = (row: number, col: number) => {
@@ -27,17 +27,25 @@ const SudokuBoard = (props: SudokuBoardProps2) => {
 					addNote={addNote}
 					initialValue={initialBoard[row][col]}
 					isEditable={editBoard[row][col]}
+					x={row}
+					y={col}
 					numberFocus={focusValue?.value}
 					isBlockFocus={
 						focusValue?.x === row ||
 						focusValue?.y === col ||
-						!!(
-							focusValue?.x &&
+						(
+							focusValue?.x !== undefined &&
+							focusValue?.y !== undefined &&
+							focusValue.x !== null &&
+							focusValue.y !== null &&
 							Math.floor(focusValue.x / 3) === Math.floor(row / 3) &&
-							focusValue?.y &&
 							Math.floor(focusValue.y / 3) === Math.floor(col / 3)
 						)
 					}
+					isIncorrect={incorrectCells?.[row]?.[col]}
+					onFocus={onFocus}
+					onValueChange={onValueChange}
+					onValueDelete={onValueDelete}
 				/>
 			</td>
 		);

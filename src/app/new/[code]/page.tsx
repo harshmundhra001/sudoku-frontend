@@ -31,6 +31,7 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 	const [numberCount, setNumberCount] = useState<number[]>([]);
 	const [boardData, setBoardData] = useState(sudokuBoard(null));
 	const [boardEditable, setBoardEditable] = useState(sudokuBoard(true));
+	const [incorrectCells, setIncorrectCells] = useState(sudokuBoard(false));
 	const [players, setPlayers] = useState<PlayerScore[]>([]);
 	const [socket, setSocket] = useState<Socket | null>(null);
 
@@ -39,6 +40,57 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 			const newCount = [...prev];
 			newCount[value - 1] += count;
 			return newCount;
+		});
+	};
+
+	const handleValueChange = async (x: number, y: number, value: number) => {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(constructUrl('API.GAME.FILL'), {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				body: JSON.stringify({
+					code,
+					x,
+					y,
+					val: value,
+				}),
+			});
+
+			if (!response.ok) {
+				const { code, error } = await response.json();
+				if (code === 401) {
+					const currentPath = window.location.pathname;
+					router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+					toast.error('Please Sign Up again.');
+					return;
+				}
+				toast.error(error[0].message);
+				return;
+			}
+
+			const { data } = await response.json();
+
+			if (!data)
+				return setIncorrectCells((prev) => {
+					const newIncorrect = [...prev];
+					newIncorrect[x][y] = true;
+					return newIncorrect;
+				});
+
+			updateNumberCount(value);
+		} catch (err) {
+			console.error(err);
+			toast.error('Failed to validate move');
+		}
+	};
+
+	const handleValueDelete = (x: number, y: number) => {
+		// Clear the incorrect state for this cell
+		setIncorrectCells((prev) => {
+			const newIncorrect = [...prev];
+			newIncorrect[x][y] = false;
+			return newIncorrect;
 		});
 	};
 
@@ -204,6 +256,10 @@ export default function Game({ params }: { params: Promise<{ code: string }> }) 
 					initialBoard={boardData}
 					editBoard={boardEditable}
 					focusValue={focus}
+					onFocus={onFocus}
+					onValueChange={handleValueChange}
+					onValueDelete={handleValueDelete}
+					incorrectCells={incorrectCells}
 				/>
 
 				<div className='flex justify-evenly w-1/3 mt-8 mb-4 '>

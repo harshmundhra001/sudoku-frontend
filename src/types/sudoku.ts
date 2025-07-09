@@ -37,11 +37,14 @@ export type SudokuBlockProps = {
 	addNote: boolean;
 	isEditable: boolean;
 	initialValue: number | null;
-	// x: number;
-	// y: number;
+	x: number;
+	y: number;
 	numberFocus?: number | null;
 	isBlockFocus?: boolean;
-	// onFocus: (x: number, y: number, val: number | null) => void;
+	isIncorrect?: boolean;
+	onFocus: (x: number, y: number, val: number | null) => void;
+	onValueChange: (x: number, y: number, value: number) => void;
+	onValueDelete: (x: number, y: number) => void;
 };
 
 export interface SudokuBoardProps2 {
@@ -49,4 +52,8 @@ export interface SudokuBoardProps2 {
 	initialBoard: (number | null)[][];
 	editBoard: boolean[][];
 	focusValue: Record<string, number | null>;
+	onFocus: (x: number, y: number, value: number | null) => void;
+	onValueChange: (x: number, y: number, value: number) => void;
+	onValueDelete: (x: number, y: number) => void;
+	incorrectCells?: boolean[][];
 }
