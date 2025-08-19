@@ -2,16 +2,13 @@
 	"name": "my-next-app",
 	"version": "0.1.0",
 	"private": true,
+	"packageManager": "pnpm@10.5.2",
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint"
-	},
-	"engines": {
-		"node": "^20.0.0",
-		"pnpm": "^8.0.0"
 	},
 	"dependencies": {
 		"framer-motion": "^12.7.3",
