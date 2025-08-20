@@ -4,14 +4,14 @@
 	"private": true,
 	"packageManager": "pnpm@10.5.2",
 	"scripts": {
-		"preinstall": "npx only-allow pnpm",
+
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint"
 	},
 	"engines": {
-		"node": "^20.0.0",
+		"node": "^22.0.0",
 		"pnpm": "^10.5.0"
 	},
 	"dependencies": {
