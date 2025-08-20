@@ -4,21 +4,17 @@
 	"private": true,
 	"packageManager": "pnpm@10.5.2",
 	"scripts": {
-
+		"preinstall": "npx only-allow pnpm",
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint"
 	},
-	"engines": {
-		"node": "^22.0.0",
-		"pnpm": "^10.5.0"
-	},
 	"dependencies": {
 		"framer-motion": "^12.7.3",
 		"next": "15.0.3",
-		"react": "19.0.0-rc-66855b96-20241106",
-		"react-dom": "19.0.0-rc-66855b96-20241106",
+		"react": "^19.1.1",
+		"react-dom": "^19.1.1",
 		"react-hot-toast": "^2.5.2",
 		"socket.io-client": "^4.8.1"
 	},
