@@ -38,6 +38,9 @@ export default function CreateGame() {
 					[false, true, false, false, false, false, true, true, false],
 					[true, false, true, false, false, false, false, true, true],
 				]}
+				onFocus={() => {}}
+				onValueChange={() => {}}
+				onValueDelete={() => {}}
 			/>
 		</div>
 	);

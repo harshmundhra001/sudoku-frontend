@@ -2,14 +2,24 @@
 import CustomButton from '@/components/custom-button';
 import { constructUrl } from '@/units/general';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 export default function CreateGame() {
 	const router = useRouter();
-	const token = localStorage.getItem('token');
+	const [token, setToken] = useState<string | null>(null);
 	const [code, setCode] = useState('');
 	const [error, setError] = useState('');
+
+	useEffect(() => {
+		const storedToken = localStorage.getItem('token');
+		setToken(storedToken);
+		
+		if (!storedToken) {
+			const currentPath = window.location.pathname;
+			router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
+		}
+	}, [router]);
 
 	const handleSubmition = async () => {
 		if (code.length !== 6) {

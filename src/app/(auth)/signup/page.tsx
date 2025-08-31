@@ -158,7 +158,9 @@ function GeneralEntryComponent<T extends NameType | CredentialsType | (NameType 
 	);
 }
 
-export default function AuthPage() {
+import { Suspense } from 'react';
+
+function AuthPageContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [currentState, setCurrentState] = useState<SignupStates | null>(null);
@@ -177,8 +179,11 @@ export default function AuthPage() {
 	];
 
 	const process = (token: string, name: string) => {
-		localStorage.setItem('token', token);
-		localStorage.setItem('user', name);
+		// Only access localStorage on the client side
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('token', token);
+			localStorage.setItem('user', name);
+		}
 
 		const redirectPath = searchParams.get('redirect');
 
@@ -287,5 +292,13 @@ export default function AuthPage() {
 				handleSubmit={handleSignUp}
 			/>
 		</div>
+	);
+}
+
+export default function AuthPage() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<AuthPageContent />
+		</Suspense>
 	);
 }

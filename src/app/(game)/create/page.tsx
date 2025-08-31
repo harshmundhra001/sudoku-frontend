@@ -10,14 +10,17 @@ export default function CreateGame() {
 	const [difficulty, setDifficulty] = useState('MEDIUM');
 	const [isPublic, setIsPublic] = useState(true);
 	const [error, setError] = useState('');
-	const token = localStorage.getItem('token');
+	const [token, setToken] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (!token) {
+		const storedToken = localStorage.getItem('token');
+		setToken(storedToken);
+		
+		if (!storedToken) {
 			const currentPath = window.location.pathname;
 			router.push(`/signup?redirect=${encodeURIComponent(currentPath)}`);
 		}
-	}, [router, token]);
+	}, [router]);
 
 	const handleCreateGame = async () => {
 		try {
