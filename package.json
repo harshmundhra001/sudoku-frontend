@@ -2,7 +2,7 @@
 	"name": "my-next-app",
 	"version": "0.1.0",
 	"private": true,
-	"packageManager": "pnpm@9.1.2",
+	"packageManager": "pnpm@10.5.2",
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"dev": "next dev",
@@ -11,10 +11,10 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"framer-motion": "^10.16.4",
-		"next": "13.5.4",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
+		"framer-motion": "^12.7.3",
+		"next": "15.0.3",
+		"react": "^19.1.1",
+		"react-dom": "^19.1.1",
 		"react-hot-toast": "^2.5.2",
 		"socket.io-client": "^4.8.1"
 	},
